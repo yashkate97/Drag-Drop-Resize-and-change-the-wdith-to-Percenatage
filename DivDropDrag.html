@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Draggable, Moveable and Resizable DIV using jQuery</title>
+    
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    
+    <style>
+        .divContainer, #divResize { 
+            border:dashed 1px #CCC; 
+            width:50%; 
+            height:25%; 
+            cursor:move; 
+            float:left 
+        } 
+       .mobile{width: 400px;margin:0 auto;position: relative;border:1px solid #CCC;min-height: 100px;}
+
+      
+    </style>
+</head>
+<body>
+<div>
+    <input type="button" style="float:left" id="btClickMe" value="Create more draggable DIV's" />
+    <input type="button" style="float:left" id="btRemove" value="remove all draggable DIV's" />
+    <input type="button" style="float:left" id="SaveResize" value="Save width in  %" />
+</div>
+
+<div class="mobile">
+    <div id="divParent"  style="width :100%;position: relative; border:1px solid red;height: 0;">
+
+
+
+       
+    </div>
+
+
+</div>
+
+<div id ="divParent2"  style="width :100%">
+
+</div>
+</body>
+
+<script>
+    var element_pos = 0;    // POSITION OF THE NEWLY CREATED ELEMENTS.
+    var iCnt = 0;
+    var elementHeight=10;
+    var i = 0;
+    $(document).ready(function() {
+
+
+
+        // CREATE MORE DIV, WITH 'ABSOLUTE' POSITIONING.
+        $('#btClickMe').click(function() {
+           
+
+            var NewDiv = $(document.createElement('div'));
+            // g.setAttribute("id", "Div1");
+            var newDivId = "Div"+iCnt;
+            $(NewDiv).attr('id', newDivId);
+
+
+            NewDiv.css({
+                border: '1px dashed', position: 'absolute', 
+                 width: '95%', left: '10px',height:'22px',top: elementHeight,
+
+            });
+
+             elementHeight = elementHeight + 22;
+           
+            // element_pos = element_pos + $('#divContainer').width() + 20;
+           
+
+            // document.getElementById('#divParent').style.height = elementHeight;
+
+           
+           $(NewDiv).appendTo('#divParent').draggable().resizable();
+
+           iCnt = iCnt + 1;
+           containerMessage = 'your container' + iCnt;
+           console.log(containerMessage);
+           $(NewDiv).append(containerMessage);
+
+            console.log(elementHeight);
+
+        });
+
+        $('#btRemove').click(function() {
+            if (iCnt != 0) { 
+                iCnt = iCnt - 1;
+                var removeDivCnt = '#Div' + iCnt;
+                console.log(removeDivCnt);
+                $(removeDivCnt).remove(); 
+                elementHeight = elementHeight - 22;
+
+                 }
+        
+            // if (iCnt == 0) { 
+            //     $('#divContainer')
+            //         .empty() 
+            //         .remove(); 
+
+            //     $('#btSubmit').remove(); 
+            //     $('#btAdd')
+            //         .removeAttr('disabled') 
+            //         .attr('class', 'bt');
+            // }
+        });
+
+ $('#SaveResize').click(function() {
+
+        
+
+var parentDiv = [];
+var div1Height = 0;
+$("#divParent > div").each((index, elem) => {
+  parentDiv.push(elem);
+});
+console.log(parentDiv);
+var fillTopValues = [];
+var noOfDivs = parentDiv.length
+console.log(parentDiv.length);
+for(a=0 ; a< noOfDivs ; a++){
+var Id = parentDiv[a];
+var DivId = Id.id;
+console.log(DivId);
+
+
+   var parentwidth = $("#divParent").width(),
+           div1width = $('#'+DivId).width();
+        //    div2width = $("#divResize").width(),
+           div1percentage = Math.round((div1width / parentwidth) * 100);
+        //    div2percentage = Math.round((div2width / parentwidth) * 100);
+    alert(div1percentage);
+    console.log(div1percentage+'%');
+    var percentageInWidth1= div1percentage+'%';
+    document.getElementById(DivId).style.width =percentageInWidth1;
+
+    // (10)/(400)-((x)/(100))
+//////////////// change variba;es namesss
+    var leftDivInPx = $('#'+DivId).css("left");
+    var leftDivValue = leftDivInPx.replace('px','');
+
+    var leftDivInPercentageValue=(leftDivValue/parentwidth) * 100;
+    var leftDivInPercentage= leftDivInPercentageValue+'%';
+
+    document.getElementById(DivId).style.left =leftDivInPercentage;
+//////////////// variba;es namesss
+
+
+var element = document.getElementById(DivId),
+    style = window.getComputedStyle(element),
+    top = style.getPropertyValue('top');
+
+
+
+    var ret = top.replace('px','');
+    var parseRet = parseInt(ret);
+    console.log(parseRet);
+    fillTopValues.push(parseRet);
+    console.log(fillTopValues);
+}
+
+var largest=fillTopValues[0];
+var maxIndex = 0;
+
+for (var f=0; f<fillTopValues.length;f++) {
+        if (fillTopValues[f] > largest) {
+            maxIndex = f;
+            largest = fillTopValues[f];
+        }
+}
+
+console.log(largest);
+console.log(maxIndex);
+// var indexMenor =fillTopValues.indexOf(Math.min.apply(Math,fillTopValues ));
+
+// console.log(indexMenor);
+
+var reducedDivSize = parseInt(largest);
+ var increasedDivHeightOfMaxTopDiv = document.getElementById(DivId).style.height;
+ var increasedDivHeightOfDiv = increasedDivHeightOfMaxTopDiv.replace('px',''); //removing px
+
+// var heightOfMaxTopDiv = 
+var finalIncreasedDivHeightOfDiv = parseInt(increasedDivHeightOfDiv);
+
+reducedDivSize=reducedDivSize + 10 + finalIncreasedDivHeightOfDiv;  //added initially declared top & height
+   $("#divParent").height(reducedDivSize);
+
+//    $("#divParent").height(div1Height);
+           var $clone = $('#divParent').clone(); 
+        
+            $('#divParent2').append($clone);
+            console.log($clone);
+
+        });
+
+ 
+
+    });
+</script>
+</html>
